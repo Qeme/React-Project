@@ -2,7 +2,8 @@ import React , { useContext, useState } from 'react';
 import { BookContext } from '../contexts/BookContext';
 
 const NewBook = () => {
-    const { AddBook } = useContext(BookContext);
+    // change the AddBook funct to dispatch
+    const { dispatch } = useContext(BookContext);
     const [ title, setTitle ] = useState('')
     const [ author, setAuthor ] = useState('')
 
@@ -11,8 +12,11 @@ const NewBook = () => {
         // prevent from auto submit
         e.preventDefault()
 
-        // call the AddBook function
-        AddBook(title,author)
+        // call the AddBook function -> change to dispatch that take action as argument
+        dispatch({type: 'ADD_BOOK',book:{
+            title,
+            author
+        }})
 
         // reset back the title and author value to empty string
         setTitle('')
