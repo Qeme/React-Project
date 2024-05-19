@@ -1,9 +1,31 @@
+import { notFound } from "next/navigation"
+
+// setup dynamicParams to true -> assume every page is already rendered... including non existing id
+export const dynamicParams = true
+
+// call the function generateStaticParams() to help in generate static page
+export async function generateStaticParams(){
+    const res = await fetch("http://localhost:4000/tickets")
+
+    const tickets = await res.json()
+
+    // we return the page for each individua id of tickets
+    return tickets.map((ticket) => ({
+        id: ticket.id
+    }))
+}
+
 async function getTicket(id){
     const response = await fetch("http://localhost:4000/tickets/" + id,{
         next: {
             revalidate: 60
         }
     })
+
+    // if no response -> id false
+    if(!response.ok){
+        notFound()
+    }
 
     return response.json()
 }
