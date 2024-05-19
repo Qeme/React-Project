@@ -2,6 +2,9 @@ import Link from "next/link"
 
 // create a function to fetch the data 
 async function getTickets(){
+    // immitate the delay for 2 sec
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    
     const response = await fetch("http://localhost:4000/tickets",{
         next: {
             revalidate: 0 // use 0 to opt out of using cache -> instance
