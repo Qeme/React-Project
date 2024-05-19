@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 // create a function to fetch the data 
 async function getTickets(){
     const response = await fetch("http://localhost:4000/tickets",{
@@ -21,13 +23,16 @@ export default async function TicketList() {
     */}
     {tickets.map((ticket)=>(
         <div key={ticket.id} className="card my-5">
-            <h3>{ticket.title}</h3>
-            {/* only preview 200 words instead of all */}
-            <p>{ticket.body.slice(0, 200)}...</p>
-            {/* this part will show the priorities label for each ticket */}
-            <div className={`pill ${ticket.priority}`}>
-                {ticket.priority} priority
-            </div>
+            {/* wrap all the ticket details inside Link tag */}
+            <Link href={`/tickets/${ticket.id}`}>
+                <h3>{ticket.title}</h3>
+                {/* only preview 200 words instead of all */}
+                <p>{ticket.body.slice(0, 200)}...</p>
+                {/* this part will show the priorities label for each ticket */}
+                <div className={`pill ${ticket.priority}`}>
+                    {ticket.priority} priority
+                </div>
+            </Link>
         </div>
     ))}
 
