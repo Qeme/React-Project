@@ -6,6 +6,7 @@ require('dotenv').config()
 
 // call the workouts router into the index.js
 const workoutRoutes = require('./routes/workouts')
+const userRoutes = require('./routes/user')
 
 mongoose.connect('mongodb://localhost:27017/merntutorial')
     .then(()=>{
@@ -33,3 +34,4 @@ app.use((req,res,next)=>{
 
 // use the router by replacing the get('/') from /api/workouts
 app.use('/api/workouts',workoutRoutes)
+app.use('/api/user',userRoutes)
