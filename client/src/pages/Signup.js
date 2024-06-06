@@ -1,14 +1,18 @@
 import { useState } from "react";
+import { useSignup } from "../hooks/useSignup";
 
 const Signup = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // now call the useSignup hook and take those 3 components data
+  const { signup, isLoading, error } = useSignup();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    console.log(email, password)
-  }
+    // it takes sometimes to finish the logic, so we put await
+    await signup(email, password);
+  };
 
   return (
     <form className="signup" onSubmit={handleSubmit}>
@@ -27,7 +31,10 @@ const Signup = () => {
         value={password}
       />
 
-      <button>Sign Up</button>
+      {/* add disabled to the button, so if true, means the user cant spamming the Sign up button while the sign up process ongoing  */}
+      <button disabled={isLoading}>Sign Up</button>
+      {/* put error message downhere as if there are error, show div section with error message there */}
+      {error && <div className="error">{error}</div>}
     </form>
   );
 };
