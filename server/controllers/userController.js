@@ -26,7 +26,7 @@ const signupUser = async (req, res) => {
     const user = await userdb.signup(email, password);
 
     // create a token by passing the user._id
-    const token = createToken(user._id)
+    const token = createToken(user._id);
 
     // pass the user information for testing
     res.status(200).json({ email, user, token });
@@ -37,8 +37,16 @@ const signupUser = async (req, res) => {
 
 // post login
 const loginUser = async (req, res) => {
+  // grab the email and password
+  const { email, password } = req.body;
+
   try {
-    res.status(200).json("login process");
+    const user = await userdb.login(email, password);
+
+    // create token
+    const token = createToken(user._id)
+
+    res.status(200).json({email, user, token});
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

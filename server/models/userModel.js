@@ -56,6 +56,35 @@ userSchema.statics.signup = async function (email, password) {
   return user;
 };
 
+userSchema.statics.login = async function (email, password) {
+  // check if the email and password are visible or not
+  if (!email || !password) {
+    throw Error("All fields must be filled");
+  }
+
+  // try to find the user by email first
+  const user = await this.findOne({ email });
+
+  // if no, throw an errow
+  if(!user){
+    throw Error('Incorrect email inserted')
+  }
+
+  /* 
+    1. so, if the user is there by email, now compare the password inserted by user
+    2. bcrypt can use .compare to compare between the password inserted and the hashed password
+  */
+  const match = await bcrypt.compare(password, user.password)
+
+  // if not match, throw an error
+  if(!match){
+    throw Error('Incorrect password inserted')
+  }
+
+  // pass the user ... any JWT process handled in server not in database
+  return user
+};
+
 // workouts is the name of the collection in DB
 // userSchema is the name of the Schema
 module.exports = mongoose.model("userdb", userSchema);
