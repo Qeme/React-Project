@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const validator = require("validator");
 const Schema = mongoose.Schema;
 
 // add second argument 'timestamp: true' to make sure if any new object created, the time will be recorded as well
@@ -18,8 +19,24 @@ const userSchema = new Schema({
 // generate static function userdb.create (.create)
 // we cant use => function because later we use 'this.'
 userSchema.statics.signup = async function (email, password) {
+  // validation part
+  // check if the email and password exist or not
+  if (!email || !password) {
+    throw Error("All fields must be filled");
+  }
+  // check if the email is REALLY an email or not
+  if (!validator.isEmail(email)) {
+    throw Error("Email is not valid");
+  }
+  // check if the password is STRONG or not
+  if (!validator.isStrongPassword(password)) {
+    throw Error("Password is weak");
+  }
+
+  // find the email first in database user collection
   const exist = await this.findOne({ email });
 
+  // check if the email already exist or not
   if (exist) {
     throw Error("The email already exist");
   }
