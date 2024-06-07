@@ -1,6 +1,7 @@
 // call the express router
 const express = require('express');
 const router = express.Router()
+const requireAuth = require('../middleware/requireAuth')
 
 // import the functions from the controller
 const {
@@ -11,6 +12,8 @@ const {
     updateWorkout
 } = require('../controllers/workoutController')
 
+// we use the middleware first before any req API can be done
+router.use(requireAuth)
 
 // put the router API for get('/api/workouts/') all
 router.get('/',getAllWorkouts)
