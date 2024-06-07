@@ -3,6 +3,7 @@ import { useEffect } from "react"
 
 // import the hooks that involve with WorkoutContext
 import { useWorkoutContext } from "../hooks/useWorkoutContext";
+import { useAuthContext } from "../hooks/useAuthContext"
 
 // import components
 import WorkoutDetails from "../components/WorkoutDetails";
@@ -12,6 +13,7 @@ import WorkoutForm from "../components/WorkoutForm";
 const Home = () => {
     // use {} to destructure 
     const { workouts, dispatch } = useWorkoutContext()
+    const { user } = useAuthContext()
     
     // call the useEffect hook
     // second argument [] because we want to run it once
@@ -20,7 +22,12 @@ const Home = () => {
         const fetchWorkout = async () => {
             try {
                 // create a variable to fetch
-                const response = await fetch('http://localhost:3002/api/workouts');
+                // now include the headers by inputing BEARER TOKEN (similar to backend)
+                const response = await fetch('http://localhost:3002/api/workouts',{
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                });
                 // take the user input and pass it as json
                 const json = await response.json()
 
@@ -37,9 +44,12 @@ const Home = () => {
             }
         };
     
-        // call the function
-        fetchWorkout();
-    }, [dispatch]);
+        // call the function if the user exist only
+        if(user){
+            fetchWorkout();
+        }
+        
+    }, [dispatch, user]); //include user as well, as it acts as depedencies
     
 
     // this is what will be presented to the page when called

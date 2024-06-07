@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useWorkoutContext } from '../hooks/useWorkoutContext'
+import { useAuthContext } from '../hooks/useAuthContext'
 
 const WorkoutForm = () =>{
     // take the dispatch components from the hooks
     const { dispatch } = useWorkoutContext()
+    const { user } = useAuthContext()
     // set up the useState for 3 properties
     const [title,setTitle] = useState('')
     const [load,setLoad] = useState('')
@@ -21,6 +23,12 @@ const WorkoutForm = () =>{
         // prevent from by default to refresh the page
         e.preventDefault()
 
+        // if no user at all, we can return
+        if(!user){
+            setError('You must be logged in')
+            return
+        }
+
         // take those 3 variables that already being altered in the form
         const workout = {title, load, reps}
 
@@ -33,7 +41,8 @@ const WorkoutForm = () =>{
             method: 'POST',
             body: JSON.stringify(workout),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization' : `Bearer ${user.token}`
             }
         })
 

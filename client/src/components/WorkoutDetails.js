@@ -1,5 +1,6 @@
 // call the useWorkoutContext hook
 import { useWorkoutContext } from "../hooks/useWorkoutContext"
+import { useAuthContext } from "../hooks/useAuthContext"
 // call date-fns package
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
@@ -9,12 +10,23 @@ const WorkoutDetails = ({workout})=>{
 
     // grab the dispatch fron useWorkoutContext
     const { dispatch } = useWorkoutContext()
+    // call the user context data
+    const { user } = useAuthContext()
 
     // handleClick will handle the delete function backend and frontend
     const handleClick = async () => {
+
+        // if no user at all, just disable the delete button functionality
+        if(!user){
+            return
+        }
+        
         const response = await fetch('http://localhost:3002/api/workouts/' + workout._id,{
             // remember to put API method
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${user.token}`
+            }
         })
         
         // the json also need to wait for the response to finish execute the fetch before it can received them
