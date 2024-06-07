@@ -6,9 +6,12 @@ const mongoose = require('mongoose')
 // get all workouts
 const getAllWorkouts = async (req,res)=>{
     try{
+        // grab the req.user from the middleware 'requireAuth.js' before we pass it into find argument
+        const user_id = req.user._id
+
         // use .find({}) empty parantheses to find all the data
         // then .sort({createdAt: -1}) by descending order means from newest to oldest
-        const workouts = await workoutdb.find({}).sort({createdAt: -1})
+        const workouts = await workoutdb.find({ user_id }).sort({createdAt: -1})
         res.status(200).json(workouts)
     }catch(error){
         res.status(400).json({error: error.message})
@@ -59,8 +62,12 @@ const createWorkout = async (req,res)=>{
     }
 
     try{
+        // grab the req.user from the middleware 'requireAuth.js'
+        const user_id = req.user._id
+
         // use .create() to generate and save the data
-        const workout = await workoutdb.create({title, reps, load})
+        // include user_id into the creation of data so we know the OWNER of that data
+        const workout = await workoutdb.create({title, reps, load, user_id})
         res.status(200).json(workout)
     }catch(error){
         res.status(400).json({error: error.message})
