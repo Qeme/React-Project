@@ -23,7 +23,7 @@ const requireAuth = async (req, res, next) => {
 
     // then we attach the user properties to req, so when next() they can use it
     // we only grab the _id of the user instead of email and meta data because it will be used just for verification for the API
-    req.user = await userdb.findOne({ _id }).select("_id");
+    req.user = await userdb.findOne({ _id }).select("_id role");
 
     next();
     

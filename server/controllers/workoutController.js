@@ -7,12 +7,17 @@ const mongoose = require('mongoose')
 const getAllWorkouts = async (req,res)=>{
     try{
         // grab the req.user from the middleware 'requireAuth.js' before we pass it into find argument
-        const user_id = req.user._id
+        const user = req.user
 
         // use .find({}) empty parantheses to find all the data
         // then .sort({createdAt: -1}) by descending order means from newest to oldest
-        const workouts = await workoutdb.find({ user_id }).sort({createdAt: -1})
-        res.status(200).json(workouts)
+        if(user.role === "admin"){
+            const workouts = await workoutdb.find({}).sort({createdAt: -1})
+            res.status(200).json(workouts)
+        }else if( user.role === "user"){
+            const workouts = await workoutdb.find({ user_id : user._id }).sort({createdAt: -1})
+            res.status(200).json(workouts)
+        }
     }catch(error){
         res.status(400).json({error: error.message})
     }

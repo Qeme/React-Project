@@ -14,6 +14,12 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    enum: ["admin", "user"],
+    required: true,
+    default: "user"
+  },
 });
 
 // generate static function userdb.create (.create)
@@ -66,23 +72,23 @@ userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
 
   // if no, throw an errow
-  if(!user){
-    throw Error('Incorrect email inserted')
+  if (!user) {
+    throw Error("Incorrect email inserted");
   }
 
   /* 
     1. so, if the user is there by email, now compare the password inserted by user
     2. bcrypt can use .compare to compare between the password inserted and the hashed password
   */
-  const match = await bcrypt.compare(password, user.password)
+  const match = await bcrypt.compare(password, user.password);
 
   // if not match, throw an error
-  if(!match){
-    throw Error('Incorrect password inserted')
+  if (!match) {
+    throw Error("Incorrect password inserted");
   }
 
   // pass the user ... any JWT process handled in server not in database
-  return user
+  return user;
 };
 
 // workouts is the name of the collection in DB
